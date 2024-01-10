@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import { registerValidation } from "./validation/auth.js";
 import { validationResult } from "express-validator";
 import UserModel from "./models/User.js";
+import checkAuth from "./utils/checkAuth.js";
 
 mongoose
   .connect(
@@ -16,6 +17,15 @@ mongoose
 const app = express();
 
 app.use(express.json());
+
+app.get("/auth/me", checkAuth, (req, res) => {
+  try {
+    res.json({
+      success: true,
+    });
+  } catch (error) {}
+});
+
 app.post("/auth/login", async (req, res) => {
   try {
     const user = await UserModel.findOne({
@@ -56,6 +66,7 @@ app.post("/auth/login", async (req, res) => {
     });
   }
 });
+
 app.post("/auth/register", registerValidation, async (req, res) => {
   try {
     const errors = validationResult(req);
