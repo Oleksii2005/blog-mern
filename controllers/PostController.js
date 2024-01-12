@@ -77,25 +77,37 @@ export const create = async (req, res) => {
 export const update = async (req, res) => {
   try {
     const postId = req.params.id;
-    await PostModel.findByIdAndUpdate(
-      {
-        _id: postId,
-      },
-      {
-        title: req.body.title,
-        text: req.body.text,
-        imageUrl: req.body.imageUrl,
-        user: req.userId,
-        tags: req.body.tags,
-      }
-    );
+
+    // Check if imageUrl is included in the request body, and update it accordingly
+    const updateData = {
+      title: req.body.title,
+      text: req.body.text,
+      user: req.userId,
+      tags: req.body.tags,
+    };
+
+    if (req.body.imageUrl) {
+      updateData.imageUrl = req.body.imageUrl;
+    }
+
+    const updatedPost = await PostModel.findByIdAndUpdate(postId, updateData, {
+      new: true,
+    });
+
+    if (!updatedPost) {
+      return res.status(404).json({
+        message: "Post not found or already deleted",
+      });
+    }
+
     res.json({
       success: true,
+      updatedPost,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({
-      message: "Failed to update a post",
+      message: "Failed to update the post",
     });
   }
 };
