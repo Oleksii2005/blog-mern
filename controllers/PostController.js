@@ -34,6 +34,28 @@ export const getOne = async (req, res) => {
     });
   }
 };
+export const remove = async (req, res) => {
+  try {
+    const postId = req.params.id;
+
+    const deletedPost = await PostModel.findByIdAndDelete(postId);
+
+    if (!deletedPost) {
+      return res.status(404).json({
+        message: "Post not found or already deleted",
+      });
+    }
+
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to delete the post",
+    });
+  }
+};
 export const create = async (req, res) => {
   try {
     const doc = new PostModel({
@@ -49,6 +71,31 @@ export const create = async (req, res) => {
     console.log(error);
     res.status(500).json({
       message: "Failed to create a post",
+    });
+  }
+};
+export const update = async (req, res) => {
+  try {
+    const postId = req.params.id;
+    await PostModel.findByIdAndUpdate(
+      {
+        _id: postId,
+      },
+      {
+        title: req.body.title,
+        text: req.body.text,
+        imageUrl: req.body.imageUrl,
+        user: req.userId,
+        tags: req.body.tags,
+      }
+    );
+    res.json({
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Failed to update a post",
     });
   }
 };
