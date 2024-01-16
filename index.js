@@ -1,6 +1,8 @@
 import express from "express";
 import multer from "multer";
 import mongoose from "mongoose";
+import cors from "cors";
+
 import {
   loginValidation,
   postCreateValidation,
@@ -8,6 +10,7 @@ import {
 } from "./validation.js";
 import { UserController, PostController } from "./controllers/index.js";
 import { checkAuth, handleValidationErrors } from "./utils/index.js";
+import { getLastTags } from "./controllers/PostController.js";
 
 mongoose
   .connect(
@@ -30,7 +33,11 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 app.use(express.json());
+app.use(cors());
 app.use("/uploads", express.static("uploads"));
+
+app.get("/tags", PostController.getLastTags);
+app.get("/posts/tags", PostController.getLastTags);
 
 app.post(
   "/auth/login",
