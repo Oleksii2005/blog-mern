@@ -11,6 +11,39 @@ export const getAll = async (req, res) => {
   }
 };
 export const getOne = async (req, res) => {
+  // try {
+  //   const postId = req.params.id;
+  //   PostModel.findOneAndUpdate(
+  //     {
+  //       _id: postId,
+  //     },
+  //     {
+  //       $inc: { viewsCount: 1 },
+  //     },
+  //     {
+  //       returnDocument: "after",
+  //     },
+  //     (error, doc) => {
+  //       if (error) {
+  //         console.log(error);
+  //         return res.status(500).json({
+  //           message: "Failed to get back a post",
+  //         });
+  //       }
+  //       if (!doc) {
+  //         return res.status(404).json({
+  //           message: "Post is not found",
+  //         });
+  //       }
+  //       res.json(doc);
+  //     }
+  //   ).populate("user");
+  // } catch (error) {
+  //   console.log(error);
+  //   res.status(500).json({
+  //     message: "Failed to get or update the post",
+  //   });
+  // }
   try {
     const postId = req.params.id;
 
@@ -18,7 +51,7 @@ export const getOne = async (req, res) => {
       { _id: postId },
       { $inc: { viewsCount: 1 } },
       { returnDocument: "after" }
-    );
+    ).populate("user");
 
     if (!updatedPost) {
       return res.status(404).json({
@@ -60,7 +93,7 @@ export const create = async (req, res) => {
   try {
     const doc = new PostModel({
       title: req.body.title,
-      text: req.body.title,
+      text: req.body.text,
       imageUrl: req.body.imageUrl,
       tags: req.body.tags,
       user: req.userId,
