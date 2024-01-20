@@ -9,7 +9,7 @@ export const registerValidation = [
   body("email", "Invalid email").isEmail(),
   body("password", "Invalid password").isLength({ min: 5 }),
   body("fullName", "Invalid name").isLength({ min: 2 }),
-  body("avatarURL", "Invalid url").optional().isURL(),
+  body("avatarUrl", "Invalid url").optional().isURL(),
 ];
 
 export const postCreateValidation = [
