@@ -116,7 +116,7 @@ export const update = async (req, res) => {
       title: req.body.title,
       text: req.body.text,
       user: req.userId,
-      tags: req.body.tags,
+      tags: req.body.tags.split(","),
     };
 
     if (req.body.imageUrl) {
